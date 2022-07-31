@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <style>
+      #factNumber {
+        display: none;
+      }
+
+      #factYear {
+        display: none;
+      }
+
+      #box2 {
+        display: none;
+      }
+    </style>
+    <title>Number Facts</title>
+  </head>
+
+  <body class="bg-dark">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <select id="select" class="form-control form-control-lg mt-5">
+            <option value="Number">Number</option>
+            <option value="Year">Year</option>
+          </select>
+          <div id="box1" class="card bg-primary text-white mt-1 p-4">
+            <h1 class="text-center">Number Facts</h1>
+            <p class="text-center">Enter a number, get a random fact</p>
+            <input
+              type="number"
+              class="form-control form-control-lg"
+              id="numberInput"
+              placeholder="Enter any number..."
+            />
+            <div id="factNumber" class="card-body">
+              <h4 class="card-title">Number Fact</h4>
+              <p id="factTextNumber" class="card-text text-warning mt-4"></p>
+            </div>
+          </div>
+          <div id="box2" class="card bg-primary text-white mt-1 p-4">
+            <h1 class="text-center">Year Facts</h1>
+            <p class="text-center">Enter a year, get a random fact</p>
+            <input
+              type="number"
+              class="form-control form-control-lg"
+              id="yearInput"
+              placeholder="Enter any year..."
+            />
+            <div id="factYear" class="card-body">
+              <h4 class="card-title">Year Fact</h4>
+              <p id="factTextYear" class="card-text text-warning mt-4"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const numberInput = document.getElementById("numberInput");
+      const factNumber = document.getElementById("factNumber");
+      const factTextNumber = document.getElementById("factTextNumber");
+
+      numberInput.addEventListener("input", getNumberFacts);
+
+      function getNumberFacts() {
+        let number = numberInput.value;
+
+        fetch("http://numbersapi.com/" + number)
+          .then((response) => response.text())
+          .then((data) => {
+            if (number != "") {
+              factNumber.style.display = "block";
+              factTextNumber.innerText = data;
+            } else if ((number = "none")) {
+              factNumber.style.display = "none";
+            }
+          })
+          .catch((error) => console.log(error));
+      }
+
+      const yearInput = document.getElementById("yearInput");
+      const factYear = document.getElementById("factYear");
+      const factTextYear = document.getElementById("factTextYear");
+
+      yearInput.addEventListener("input", getYearFacts);
+
+      function getYearFacts() {
+        let year = yearInput.value;
+
+        fetch(`http://numbersapi.com/${year}/year`)
+          .then((response) => response.text())
+          .then((data) => {
+            if (year != "") {
+              factYear.style.display = "block";
+              factTextYear.innerText = data;
+            } else if ((year = "none")) {
+              factYear.style.display = "none";
+            }
+          })
+          .catch((error) => console.log(error));
+      }
+
+      const box1 = document.getElementById("box1");
+      const box2 = document.getElementById("box2");
+      const select = document.getElementById("select");
+
+      select.addEventListener("change", showFacts);
+
+      function showFacts() {
+        const selectValue = document.getElementById("select").value;
+        if (selectValue == "Year") {
+          box1.style.display = "none";
+          box2.style.display = "block";
+          numberInput.value = "none";
+          factNumber.style.display = "none";
+        } else if (selectValue == "Number") {
+          box1.style.display = "block";
+          box2.style.display = "none";
+          yearInput.value = "none";
+          factYear.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
